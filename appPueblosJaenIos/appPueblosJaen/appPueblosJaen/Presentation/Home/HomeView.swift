@@ -11,6 +11,7 @@ struct HomeView: View {
     
     //MARK: - Properties
     var pueblos: [Pueblo] = []
+    @State private var searchText: String = ""
     
     //MARK: - Functions
     init(pueblos: [Pueblo]) {
@@ -21,14 +22,25 @@ struct HomeView: View {
         }
     }
     
+    private var filteredPueblos: [Pueblo] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return pueblos }
+        return pueblos.filter { $0.nombre.localizedCaseInsensitiveContains(query) }
+    }
+    
     var body: some View {
         NavigationView{
-            List(self.pueblos) { pueblo in
+            List(filteredPueblos) { pueblo in
                 PuebloCellView(pueblo: pueblo)
             }
-            .navigationTitle("Pueblos")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar pueblos")
+            .navigationTitle("Pueblos de Jaén")
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.purple, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .tint(.white)
         }
     }
 }
@@ -36,3 +48,4 @@ struct HomeView: View {
 #Preview {
     HomeView(pueblos: [])
 }
+

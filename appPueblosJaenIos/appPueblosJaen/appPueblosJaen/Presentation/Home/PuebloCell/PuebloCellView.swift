@@ -72,6 +72,7 @@ struct PuebloCellView: View {
             Text(nombreSeguro)
                 .fontWeight(.semibold)
                 .font(.system(size: 20))
+                .foregroundStyle(.purple)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
                 .lineLimit(1)
