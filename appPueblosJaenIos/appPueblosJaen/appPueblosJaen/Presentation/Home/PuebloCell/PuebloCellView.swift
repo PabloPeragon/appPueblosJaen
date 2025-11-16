@@ -15,28 +15,68 @@ struct PuebloCellView: View {
         self.pueblo = pueblo
     }
     
+    private var escudoURL: URL? {
+        URL(string: pueblo.urlEscudo)
+    }
+
+    private var nombreSeguro: String {
+        let trimmed = pueblo.nombre.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "Nombre no disponible" : trimmed
+    }
+    
     var body: some View {
         HStack {
-            // Imagen del escudo
-            AsyncImage(url: URL(string: pueblo.urlEscudo), content: { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 50)
-            }, placeholder: {
-                ZStack {
-                    Color.clear
-                        .frame(width: 100, height: 50)
-                    ProgressView()
+            if let url = escudoURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.secondary.opacity(0.08))
+                                .frame(width: 100, height: 50)
+                            ProgressView()
+                        }
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 50)
+                            .accessibilityLabel("Escudo de \(nombreSeguro)")
+                    case .failure:
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.secondary.opacity(0.08))
+                                .frame(width: 100, height: 50)
+                            Image(systemName: "shield.lefthalf.filled")
+                                .imageScale(.large)
+                                .foregroundStyle(.secondary)
+                        }
+                        .accessibilityLabel("Escudo no disponible")
+                    @unknown default:
+                        Color.clear
+                            .frame(width: 100, height: 50)
+                    }
                 }
-            })
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.secondary.opacity(0.08))
+                        .frame(width: 100, height: 50)
+                    Image(systemName: "shield.lefthalf.filled")
+                        .imageScale(.large)
+                        .foregroundStyle(.secondary)
+                }
+                .accessibilityLabel("Escudo no disponible")
+            }
             
-            //nombre del pueblo
-            Text(pueblo.nombre)
+            Text(nombreSeguro)
                 .fontWeight(.semibold)
                 .font(.system(size: 20))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .accessibilityLabel("Nombre del pueblo: \(nombreSeguro)")
         }
     }
 }
@@ -48,5 +88,3 @@ struct PuebloCellView: View {
                           )
     )
 }
-
-
