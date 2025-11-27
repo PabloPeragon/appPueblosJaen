@@ -7,3 +7,12 @@
 
 import Foundation
 
+protocol RemoteDataSourceProtocol {
+    
+    // MARK: Properties
+    var urlRequestHelper: URLRequestHelperProtocol { get }
+    
+    // MARK: Functions
+    func listPueblos() async throws -> ([Pueblo])
+}
+

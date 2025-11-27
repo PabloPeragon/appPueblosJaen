@@ -80,6 +80,9 @@ playground.xcworkspace
 *.swo
 *.orig
 
+# xcconfig
+Secrets.xcconfig
+
 # Firebase/Crashlytics (si generas símbolos fuera de repositorio)
 # crashlytics-build/
 

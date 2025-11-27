@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+final class RemoteDataSourceImpl: RemoteDataSourceProtocol {
+    
+    
+    var urlRequestHelper: URLRequestHelperProtocol = URLRequestHelperImpl()
+    
+    func listPueblos() async throws -> ([Pueblo]) {
+        []
+
+    }
+}

@@ -8,5 +8,10 @@
 import Foundation
 
 protocol URLRequestHelperProtocol {
-    func ListPueblos() -> URLRequest?
+    // MARK: Properties
+    var baseURL: String { get }
+    var endpoints: Endpoints { get }
+    
+    // MARK: Functions
+    func listPueblos() -> URLRequest?
 }
