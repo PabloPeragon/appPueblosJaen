@@ -13,6 +13,6 @@ protocol RemoteDataSourceProtocol {
     var urlRequestHelper: URLRequestHelperProtocol { get }
     
     // MARK: Functions
-    func listPueblos() async throws -> ([Pueblo])
+    func listPueblos() async throws -> [Pueblo]?
 }
 

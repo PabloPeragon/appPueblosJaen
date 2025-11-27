@@ -9,12 +9,19 @@ import Foundation
 
 final class RepositoryImpl: RepositoryProtocol {
     
+    
+    
     // MARK: Properties
-    var remoteDataSource: any RemoteDataSourceProtocol
+    var remoteDataSource: RemoteDataSourceProtocol
     
     // MARK: Init
     init(remoteDataSource: RemoteDataSourceProtocol) {
         self.remoteDataSource = remoteDataSource
+    }
+    
+    //MARK: Functions
+    func listPueblos() async throws -> [Pueblo]? {
+        return try await remoteDataSource.listPueblos()
     }
     
 }

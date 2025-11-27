@@ -13,4 +13,6 @@ protocol RepositoryProtocol {
     var remoteDataSource: RemoteDataSourceProtocol { get }
     
     // MARK: Functions
+    func listPueblos() async throws -> [Pueblo]?
+
 }
