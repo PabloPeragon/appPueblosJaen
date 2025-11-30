@@ -16,7 +16,7 @@ struct Pueblo: Identifiable, Decodable {
     let longitud: Double?
     let comarca: String?
     let descripcion: String?
-    let urlEscudo: String
+    let urlEscudo: String?
     let altitud: Int?
     let superficie: Double?
     let gentilicio: String?

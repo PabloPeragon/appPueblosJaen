@@ -11,7 +11,7 @@ import SwiftUI
 struct appPueblosJaen: App {
     var body: some Scene {
         WindowGroup {
-            HomeView(pueblos: [])
+            HomeView(homeViewModel: HomeViewModel(repository: RepositoryImpl(remoteDataSource: RemoteDataSourceImpl())), pueblos: [])
         }
     }
 }

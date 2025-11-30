@@ -16,7 +16,7 @@ struct PuebloCellView: View {
     }
     
     private var escudoURL: URL? {
-        URL(string: pueblo.urlEscudo)
+        URL(string: (pueblo.urlEscudo ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
     private var nombreSeguro: String {

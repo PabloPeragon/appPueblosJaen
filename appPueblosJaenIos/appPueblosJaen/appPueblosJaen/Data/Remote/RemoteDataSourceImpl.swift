@@ -34,11 +34,11 @@ final class RemoteDataSourceImpl: RemoteDataSourceProtocol {
         // Si el status code es 200, caso de exito, y devuelve lista de pueblos.
         case 200:
             // Convierte los datos a un array de pueblos y los devuelve
-            guard let pueblos = try? JSONDecoder().decode([Pueblo].self, from: data) else {
+            guard let pueblos = try? JSONDecoder().decode ([Pueblo].self, from: data) else {
                 print("Error: error al decodificar la respuesta del servidor")
                 return nil
             }
-            print("Pueblos obtenidos correctamente del servidor: \(pueblos)")
+            //print("Pueblos obtenidos correctamente del servidor: \(pueblos)")
             return pueblos
             
             
