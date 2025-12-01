@@ -16,7 +16,7 @@ struct PuebloCellView: View {
     }
     
     private var escudoURL: URL? {
-        URL(string: (pueblo.urlEscudo ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
+        URL(string: (pueblo.url_escudo ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
     private var nombreSeguro: String {
@@ -29,6 +29,7 @@ struct PuebloCellView: View {
             if let url = escudoURL {
                 AsyncImage(url: url) { phase in
                     switch phase {
+                        
                     case .empty:
                         ZStack {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -36,12 +37,14 @@ struct PuebloCellView: View {
                                 .frame(width: 100, height: 50)
                             ProgressView()
                         }
+                        
                     case .success(let image):
                         image
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 50)
                             .accessibilityLabel("Escudo de \(nombreSeguro)")
+                        
                     case .failure:
                         ZStack {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -85,7 +88,7 @@ struct PuebloCellView: View {
 #Preview {
     PuebloCellView(pueblo:
             Pueblo(
-                id: 204, nombre: "Jamilena", codigoPostal: "23658", habitantes: 3412, latitud: 37.75000000, longitud: -3.93330000, comarca: "Jaén", descripcion: "Tierra de ajo y aceite de oliva, pueblo pequeño pero muy bonito, Jamilena chiquita y bonita.", urlEscudo: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/escudos-pueblos/escudos/204.png", altitud: 568, superficie: 10.0, gentilicio: "Jamilenudo"
+                id: 204, nombre: "Jamilena", codigo_postal: "23658", habitantes: 3412, latitud: 37.75000000, longitud: -3.93330000, comarca: "Jaén", descripcion: "Tierra de ajo y aceite de oliva, pueblo pequeño pero muy bonito, Jamilena chiquita y bonita.", url_escudo: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/escudos-pueblos/escudos/204.png", altitud: 568, superficie: 10.0, gentilicio: "Jamilenudo"
                           )
     )
 }

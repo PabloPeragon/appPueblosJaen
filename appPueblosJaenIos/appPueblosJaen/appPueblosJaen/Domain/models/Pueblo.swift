@@ -10,13 +10,13 @@ import Foundation
 struct Pueblo: Identifiable, Decodable {
     let id: Int
     let nombre: String
-    let codigoPostal: String?
+    let codigo_postal: String?
     let habitantes: Int?
     let latitud: Double?
     let longitud: Double?
     let comarca: String?
     let descripcion: String?
-    let urlEscudo: String?
+    let url_escudo: String?
     let altitud: Int?
     let superficie: Double?
     let gentilicio: String?
