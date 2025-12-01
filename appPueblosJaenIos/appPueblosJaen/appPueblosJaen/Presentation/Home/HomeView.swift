@@ -11,28 +11,24 @@ struct HomeView: View {
     
     //MARK: - Properties
     @ObservedObject var homeViewModel: HomeViewModel
-    var pueblos: [Pueblo] = []
     @State private var searchText: String = ""
     
     //MARK: - Functions
-    init(homeViewModel: HomeViewModel, pueblos: [Pueblo]) {
-        self.homeViewModel = homeViewModel
-        for i in 1...10{
-            let pueblo = Pueblo(id: 204, nombre: "Jamilena\(i)", codigo_postal: "23658", habitantes: 3412, latitud: 37.75000000, longitud: -3.93330000, comarca: "Jaén", descripcion: "Tierra de ajo y aceite de oliva, pueblo pequeño pero muy bonito, Jamilena chiquita y bonita.", url_escudo: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/escudos-pueblos/escudos/204.png", altitud: 568, superficie: 10.0, gentilicio: "Jamilenudo"
-            )
-            self.pueblos.append(pueblo)
-        }
-    }
-    
     private var filteredPueblos: [Pueblo] {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return pueblos }
-        return pueblos.filter { $0.nombre.localizedCaseInsensitiveContains(query) }
+        let rawQuery = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let query = rawQuery.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+        guard !query.isEmpty else { return homeViewModel.pueblos }
+        return homeViewModel.pueblos.filter { pueblo in
+            let normalizedName = pueblo.nombre
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            return normalizedName.contains(query)
+        }
     }
     
     var body: some View {
         NavigationView{
-            List(homeViewModel.pueblos) { pueblo in
+            List(filteredPueblos) { pueblo in
                 PuebloCellView(pueblo: pueblo)
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar pueblos")
@@ -48,6 +44,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(homeViewModel: HomeViewModel(repository: RepositoryImpl(remoteDataSource: RemoteDataSourceImpl())), pueblos: [])
+    HomeView(homeViewModel: HomeViewModel(repository: RepositoryImpl(remoteDataSource: RemoteDataSourceImpl())))
 }
-
