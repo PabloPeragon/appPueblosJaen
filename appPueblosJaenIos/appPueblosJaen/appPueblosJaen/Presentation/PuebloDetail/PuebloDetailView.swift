@@ -6,21 +6,47 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct PuebloDetailView: View {
     //MARK: - Properties
     @ObservedObject var homeViewModel: HomeViewModel
     var pueblo: Pueblo
+    @State private var cameraPosition: MapCameraPosition
     
     init(homeViewModel: HomeViewModel, pueblo: Pueblo) {
         self.homeViewModel = homeViewModel
         self.pueblo = pueblo
+        let latitud = pueblo.latitud ?? 0
+        let longitud = pueblo.longitud ?? 0
+        let region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: latitud, longitude: longitud),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
+        _cameraPosition = State(initialValue: .region(region))
     }
     
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView{
+            VStack(alignment: .leading, spacing: 16) {
+                Map(position: $cameraPosition) {
+                    let latitud = pueblo.latitud ?? 0
+                    let longitud = pueblo.longitud ?? 0
+                    Annotation(pueblo.nombre, coordinate: CLLocationCoordinate2D(latitude: latitud, longitude: longitud)) {
+                        ZStack {
+                            Circle().fill(.blue).frame(width: 18, height: 18)
+                            Circle().stroke(.white, lineWidth: 2).frame(width: 12, height: 12)
+                        }
+                    }
+                }
+                .navigationTitle(pueblo.nombre)
+            }
+            .frame(height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
     }
+    
 }
 
 #Preview {

@@ -12,6 +12,10 @@ struct HomeView: View {
     //MARK: - Properties
     @ObservedObject var homeViewModel: HomeViewModel
     @State private var searchText: String = ""
+    @State private var path = NavigationPath()
+    
+    
+    
     
     //MARK: - Functions
     private var filteredPueblos: [Pueblo] {
@@ -27,9 +31,14 @@ struct HomeView: View {
     }
     
     var body: some View {
-        NavigationView{
+        NavigationStack(path: $path){
             List(filteredPueblos) { pueblo in
-                PuebloCellView(pueblo: pueblo)
+                NavigationLink(value: pueblo){
+                    PuebloCellView(pueblo: pueblo)
+                }
+            }
+            .navigationDestination(for: Pueblo.self) { pueblo in
+                PuebloDetailView(homeViewModel: homeViewModel, pueblo: pueblo)
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar pueblos")
             .navigationTitle("Pueblos de Jaén")

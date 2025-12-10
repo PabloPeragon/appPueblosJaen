@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Pueblo: Identifiable, Decodable {
+struct Pueblo: Identifiable, Decodable, Hashable {
     let id: Int
     let nombre: String
     let codigo_postal: String?

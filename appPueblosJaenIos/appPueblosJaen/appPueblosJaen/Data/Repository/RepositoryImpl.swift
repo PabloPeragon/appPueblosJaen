@@ -9,8 +9,7 @@ import Foundation
 
 final class RepositoryImpl: RepositoryProtocol {
     
-    
-    
+
     // MARK: Properties
     var remoteDataSource: RemoteDataSourceProtocol
     
