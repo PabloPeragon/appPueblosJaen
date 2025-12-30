@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Lugares y Fotos</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-purple-500 to-indigo-600 min-h-screen p-6">
+  
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-2xl p-8 mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800">🏛️ Gestión de Lugares</h1>
+          <p class="text-gray-600 mt-2">Admin: <span id="adminEmail" class="font-semibold"></span></p>
+        </div>
+        <button id="logoutBtn" onclick="cerrarSesion()" class="hidden bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+          Cerrar Sesión
+        </button>
+      </div>
+      <div id="statusMessage" class="mt-4 hidden"></div>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="bg-white rounded-xl shadow-2xl p-8">
+      <h2 class="text-2xl font-bold mb-6">🔐 Iniciar Sesión</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Email</label>
+          <input type="email" id="loginEmail" value="pabloperagon@gmail.com" 
+                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Contraseña</label>
+          <input type="password" id="loginPassword" 
+                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+        </div>
+        <button onclick="iniciarSesion()" 
+                class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition">
+          Iniciar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Panel -->
+    <div id="mainPanel" class="hidden space-y-6">
+      
+      <!-- Tabs -->
+      <div class="bg-white rounded-xl shadow-lg p-4">
+        <div class="flex space-x-2">
+          <button onclick="cambiarTab('crear')" class="tab-btn active px-6 py-3 rounded-lg font-semibold">
+            ➕ Crear Lugar
+          </button>
+          <button onclick="cambiarTab('lugares')" class="tab-btn px-6 py-3 rounded-lg font-semibold">
+            📍 Ver Lugares
+          </button>
+          <button onclick="cambiarTab('fotos')" class="tab-btn px-6 py-3 rounded-lg font-semibold">
+            📸 Subir Fotos
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Crear Lugar -->
+      <div id="crearTab" class="tab-content bg-white rounded-xl shadow-2xl p-8">
+        <h2 class="text-2xl font-bold mb-6">➕ Crear Nuevo Lugar</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Pueblo *</label>
+            <select id="puebloSelect" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Selecciona un pueblo...</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Nombre del Lugar *</label>
+              <input type="text" id="nombreLugar" placeholder="Ej: Catedral de Jaén" 
+                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Tipo *</label>
+              <select id="tipoLugar" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                <option value="">Selecciona...</option>
+                <option value="catedral">Catedral</option>
+                <option value="castillo">Castillo</option>
+                <option value="iglesia">Iglesia</option>
+                <option value="monumento">Monumento</option>
+                <option value="museo">Museo</option>
+                <option value="plaza">Plaza</option>
+                <option value="mirador">Mirador</option>
+                <option value="parque">Parque</option>
+                <option value="palacio">Palacio</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Descripción</label>
+            <textarea id="descripcionLugar" rows="3" 
+                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"></textarea>
+          </div>
+
+          <button onclick="crearLugar()" id="crearBtn"
+                  class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg">
+            Crear Lugar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Ver Lugares -->
+      <div id="lugaresTab" class="tab-content hidden bg-white rounded-xl shadow-2xl p-8">
+        <h2 class="text-2xl font-bold mb-6">📍 Lugares Creados</h2>
+        <div id="lugaresGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- Tab: Subir Fotos -->
+      <div id="fotosTab" class="tab-content hidden bg-white rounded-xl shadow-2xl p-8">
+        <h2 class="text-2xl font-bold mb-6">📸 Subir Fotos</h2>
+        
+        <div class="space-y-6">
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Lugar *</label>
+            <select id="lugarFotosSelect" onchange="cargarGaleria()" 
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Selecciona un lugar...</option>
+            </select>
+          </div>
+
+          <div id="dropZone" class="border-4 border-dashed border-purple-400 rounded-lg p-12 text-center cursor-pointer hover:bg-purple-50 transition">
+            <input type="file" id="fotosInput" multiple accept="image/*" class="hidden">
+            <p class="text-xl font-semibold text-gray-700">📁 Arrastra fotos aquí o haz clic</p>
+            <p class="text-gray-500 mt-2">Máximo 5MB por foto</p>
+          </div>
+
+          <div id="previewGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
+          
+          <button onclick="subirFotos()" id="subirBtn" class="hidden w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600">
+            Subir Fotos Seleccionadas
+          </button>
+
+          <hr class="my-8">
+
+          <h3 class="text-xl font-bold">🖼️ Galería Actual</h3>
+          <div id="galeriaGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 text-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-500 mx-auto mb-4"></div>
+      <p class="text-lg font-semibold">Subiendo fotos...</p>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://kmxacmsqybtwbebqhwnu.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtteGFjbXNxeWJ0d2JlYnFod251Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMzc4NjQsImV4cCI6MjA3NjgxMzg2NH0.Tjpw2BFrIZfBf8LOf4nBKq7s551lrNSsqiIXKSgz_E4'
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    let fotosSeleccionadas = []
+
+    function mostrarMensaje(msg, tipo) {
+      const el = document.getElementById('statusMessage')
+      el.className = `p-4 rounded-lg ${tipo === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`
+      el.textContent = msg
+      el.classList.remove('hidden')
+      setTimeout(() => el.classList.add('hidden'), 5000)
+    }
+
+    async function iniciarSesion() {
+      const email = document.getElementById('loginEmail').value
+      const password = document.getElementById('loginPassword').value
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) throw error
+        
+        document.getElementById('adminEmail').textContent = data.user.email
+        document.getElementById('loginSection').classList.add('hidden')
+        document.getElementById('mainPanel').classList.remove('hidden')
+        document.getElementById('logoutBtn').classList.remove('hidden')
+        
+        await cargarPueblos()
+        mostrarMensaje('Sesión iniciada', 'success')
+      } catch (error) {
+        mostrarMensaje('Error: ' + error.message, 'error')
+      }
+    }
+
+    async function cerrarSesion() {
+      await supabase.auth.signOut()
+      location.reload()
+    }
+
+    async function cargarPueblos() {
+      const { data } = await supabase.from('pueblos').select('id, nombre').order('nombre')
+      const select = document.getElementById('puebloSelect')
+      select.innerHTML = '<option value="">Selecciona...</option>' +
+        data.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')
+    }
+
+    async function crearLugar() {
+      const puebloId = document.getElementById('puebloSelect').value
+      const nombre = document.getElementById('nombreLugar').value
+      const tipo = document.getElementById('tipoLugar').value
+      const descripcion = document.getElementById('descripcionLugar').value
+
+      if (!puebloId || !nombre || !tipo) {
+        mostrarMensaje('Completa los campos obligatorios', 'error')
+        return
+      }
+
+      const btn = document.getElementById('crearBtn')
+      btn.disabled = true
+      btn.textContent = 'Creando...'
+
+      try {
+        const { error } = await supabase.from('lugares_importantes').insert({
+          pueblo_id: parseInt(puebloId),
+          nombre, tipo, descripcion: descripcion || null, activo: true
+        })
+
+        if (error) throw error
+        
+        mostrarMensaje(`✅ Lugar "${nombre}" creado!`, 'success')
+        document.getElementById('nombreLugar').value = ''
+        document.getElementById('tipoLugar').value = ''
+        document.getElementById('descripcionLugar').value = ''
+      } catch (error) {
+        mostrarMensaje('Error: ' + error.message, 'error')
+      } finally {
+        btn.disabled = false
+        btn.textContent = 'Crear Lugar'
+      }
+    }
+
+    async function cargarLugares() {
+      const { data } = await supabase.from('lugares_importantes')
+        .select('*, pueblos!inner(nombre)')
+        .order('created_at', { ascending: false })
+
+      const grid = document.getElementById('lugaresGrid')
+      grid.innerHTML = data.map(l => `
+        <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-purple-400 transition">
+          <h3 class="font-bold text-lg">${l.nombre}</h3>
+          <p class="text-gray-600 text-sm">${l.pueblos.nombre}</p>
+          <span class="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">${l.tipo}</span>
+        </div>
+      `).join('')
+
+      // También cargar en el select de fotos
+      const select = document.getElementById('lugarFotosSelect')
+      select.innerHTML = '<option value="">Selecciona...</option>' +
+        data.map(l => `<option value="${l.id}">${l.nombre} (${l.pueblos.nombre})</option>`).join('')
+    }
+
+    function cambiarTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'bg-purple-500', 'text-white'))
+      event.target.classList.add('active', 'bg-purple-500', 'text-white')
+      
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'))
+      document.getElementById(tab + 'Tab').classList.remove('hidden')
+      
+      if (tab === 'lugares' || tab === 'fotos') cargarLugares()
+    }
+
+    // Drag & Drop
+    const dropZone = document.getElementById('dropZone')
+    const input = document.getElementById('fotosInput')
+
+    dropZone.onclick = () => input.click()
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-purple-100') }
+    dropZone.ondragleave = () => dropZone.classList.remove('bg-purple-100')
+    dropZone.ondrop = (e) => {
+      e.preventDefault()
+      dropZone.classList.remove('bg-purple-100')
+      handleFiles(e.dataTransfer.files)
+    }
+    input.onchange = (e) => handleFiles(e.target.files)
+
+    function handleFiles(files) {
+      fotosSeleccionadas = Array.from(files)
+      const grid = document.getElementById('previewGrid')
+      const btn = document.getElementById('subirBtn')
+
+      if (files.length === 0) {
+        grid.innerHTML = ''
+        btn.classList.add('hidden')
+        return
+      }
+
+      btn.classList.remove('hidden')
+      grid.innerHTML = Array.from(files).map((f, i) => {
+        const url = URL.createObjectURL(f)
+        return `
+          <div class="relative">
+            <img src="${url}" class="w-full h-32 object-cover rounded-lg">
+            ${i === 0 ? '<span class="absolute top-1 left-1 bg-yellow-400 text-xs px-2 py-1 rounded font-bold">PORTADA</span>' : ''}
+          </div>
+        `
+      }).join('')
+    }
+
+    async function subirFotos() {
+      const lugarId = document.getElementById('lugarFotosSelect').value
+      if (!lugarId) return mostrarMensaje('Selecciona un lugar', 'error')
+      if (fotosSeleccionadas.length === 0) return mostrarMensaje('Selecciona fotos', 'error')
+
+      document.getElementById('loadingOverlay').classList.remove('hidden')
+
+      try {
+        for (let i = 0; i < fotosSeleccionadas.length; i++) {
+          const file = fotosSeleccionadas[i]
+          const ext = file.name.split('.').pop()
+          const path = `lugares/${lugarId}/${Date.now()}_${i}.${ext}`
+
+          const { error: uploadError } = await supabase.storage
+            .from('fotos-lugares')
+            .upload(path, file, { upsert: true })
+
+          if (uploadError) throw uploadError
+
+          const { data: { publicUrl } } = supabase.storage.from('fotos-lugares').getPublicUrl(path)
+
+          const { error: dbError } = await supabase.from('fotos_lugares').insert({
+            lugar_id: parseInt(lugarId),
+            url_foto: publicUrl,
+            es_portada: i === 0,
+            orden: i
+          })
+
+          if (dbError) throw dbError
+        }
+
+        mostrarMensaje(`✅ ${fotosSeleccionadas.length} fotos subidas!`, 'success')
+        fotosSeleccionadas = []
+        document.getElementById('previewGrid').innerHTML = ''
+        document.getElementById('subirBtn').classList.add('hidden')
+        document.getElementById('fotosInput').value = ''
+        await cargarGaleria()
+      } catch (error) {
+        mostrarMensaje('Error: ' + error.message, 'error')
+      } finally {
+        document.getElementById('loadingOverlay').classList.add('hidden')
+      }
+    }
+
+    async function cargarGaleria() {
+      const lugarId = document.getElementById('lugarFotosSelect').value
+      if (!lugarId) return
+
+      const { data } = await supabase.from('fotos_lugares')
+        .select('*')
+        .eq('lugar_id', lugarId)
+        .order('orden')
+
+      const grid = document.getElementById('galeriaGrid')
+      if (!data || data.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-gray-500 text-center">No hay fotos aún</p>'
+        return
+      }
+
+      grid.innerHTML = data.map(f => `
+        <div class="relative group">
+          <img src="${f.url_foto}" class="w-full h-32 object-cover rounded-lg">
+          ${f.es_portada ? '<span class="absolute top-1 left-1 bg-yellow-400 text-xs px-2 py-1 rounded font-bold">PORTADA</span>' : ''}
+          <button onclick="eliminarFoto(${f.id})" 
+                  class="absolute top-1 right-1 bg-red-500 text-white w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition">
+            ×
+          </button>
+        </div>
+      `).join('')
+    }
+
+    async function eliminarFoto(id) {
+      if (!confirm('¿Eliminar esta foto?')) return
+      
+      const { error } = await supabase.from('fotos_lugares').delete().eq('id', id)
+      if (error) return mostrarMensaje('Error: ' + error.message, 'error')
+      
+      mostrarMensaje('Foto eliminada', 'success')
+      await cargarGaleria()
+    }
+
+    // Estilos para tabs activos
+    const style = document.createElement('style')
+    style.textContent = `.tab-btn { transition: all 0.3s; } .tab-btn:hover { transform: translateY(-2px); }`
+    document.head.appendChild(style)
+  </script>
+</body>
+</html>

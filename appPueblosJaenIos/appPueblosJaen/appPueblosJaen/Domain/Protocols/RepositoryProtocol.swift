@@ -14,5 +14,7 @@ protocol RepositoryProtocol {
     
     // MARK: Functions
     func listPueblos() async throws -> [Pueblo]?
+    func listLugares(puebloId: Int) async throws -> [LugarImportante]?
+    func listFotos(lugarId: Int) async throws -> [PuebloFoto]?
 
 }
