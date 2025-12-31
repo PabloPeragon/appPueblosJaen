@@ -89,7 +89,7 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
         urlRequest.httpMethod = "GET"
         urlRequest.setValue(token, forHTTPHeaderField: "apikey")
         urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        urlRequest.setValue("applicaiton/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         return urlRequest
     }
 }

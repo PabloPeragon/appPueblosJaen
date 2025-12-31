@@ -2,35 +2,49 @@ import Foundation
 
 @MainActor
 final class PuebloDetailViewModel: ObservableObject {
-    
-    // MARK: Properties
+    // MARK: - Types
+    enum LoadState {
+        case idle
+        case loading
+        case loaded
+        case failed(String)
+    }
+
+    // MARK: - Properties
     let repository: RepositoryProtocol
-    @Published var lugares: [LugarImportante] = []
-    @Published var fotosPueblo: [PuebloFoto] = []
-    
+
+    @Published private(set) var lugares: [LugarImportante] = []
+    @Published private(set) var fotosPueblo: [PuebloFoto] = []
+
+    @Published var lugaresState: LoadState = .idle
+    @Published var fotosState: LoadState = .idle
+
     init(repository: RepositoryProtocol) {
         self.repository = repository
     }
-    
-    // MARK: Fuctions
-    func fetchLugares(for lugarImp: LugarImportante) async {
-        Task {
-            guard let lugares = try? await self.repository.listLugares(puebloId: lugarImp.pueblo_id) else {
-                print("Error al obtener el id del pueblo en listLugares")
-                return
-            }
+
+    // MARK: - API
+    /// Carga los lugares de un pueblo por su identificador.
+    func fetchLugares(for puebloId: Int) async {
+        lugaresState = .loading
+        do {
+            let lugares = try await repository.listLugares(puebloId: puebloId)
             self.lugares = lugares
+            lugaresState = .loaded
+        } catch {
+            lugaresState = .failed("No se pudieron cargar los lugares: \(error.localizedDescription)")
         }
     }
-    
-    func fetchFotos(for lugarId: PuebloFoto) async {
-        Task {
-            guard let fotosPueblo = try? await self.repository.listFotos(lugarId: lugarId.lugar_id) else {
-                print("Error al obtener el id del lugar en PuebloFoto")
-                return
-            }
-            self.fotosPueblo = fotosPueblo
-            
-            }
+
+    /// Carga las fotos de un lugar por su identificador.
+    func fetchFotos(for lugarId: Int) async {
+        fotosState = .loading
+        do {
+            let fotos = try await repository.listFotos(lugarId: lugarId)
+            self.fotosPueblo = fotos
+            fotosState = .loaded
+        } catch {
+            fotosState = .failed("No se pudieron cargar las fotos: \(error.localizedDescription)")
         }
     }
+}
