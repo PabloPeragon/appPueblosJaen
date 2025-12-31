@@ -28,11 +28,11 @@ final class PuebloDetailViewModel: ObservableObject {
     func fetchLugares(for puebloId: Int) async {
         lugaresState = .loading
         do {
-            let lugares = try await repository.listLugares(puebloId: puebloId)
-            self.lugares = lugares
+            self.lugares = try await repository.listLugares(puebloId: puebloId)
             lugaresState = .loaded
         } catch {
-            lugaresState = .failed("No se pudieron cargar los lugares: \(error.localizedDescription)")
+            self.lugares = []
+            lugaresState = .failed(error.localizedDescription)
         }
     }
 
@@ -40,11 +40,11 @@ final class PuebloDetailViewModel: ObservableObject {
     func fetchFotos(for lugarId: Int) async {
         fotosState = .loading
         do {
-            let fotos = try await repository.listFotos(lugarId: lugarId)
-            self.fotosPueblo = fotos
+            self.fotosPueblo = try await repository.listFotos(lugarId: lugarId)
             fotosState = .loaded
         } catch {
-            fotosState = .failed("No se pudieron cargar las fotos: \(error.localizedDescription)")
+            self.fotosPueblo = []
+            fotosState = .failed(error.localizedDescription)
         }
     }
 }

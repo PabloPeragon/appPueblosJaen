@@ -6,6 +6,7 @@
 //
 import Foundation
 
+@MainActor
 final class HomeViewModel: ObservableObject {
     
     // MARK: Properties
@@ -20,14 +21,14 @@ final class HomeViewModel: ObservableObject {
     
     // MARK: Functions
     func fetchPueblos() {
-        DispatchQueue.main.async {
-            Task {
-                guard let pueblos = try? await self.repository.listPueblos() else {
-                    print("Error al obtener los pueblos: los pueblos son nulos o la solicitud falló.")
-                    return
-                }
-                self.pueblos = pueblos
+        Task {
+            do {
+                self.pueblos = try await repository.listPueblos()
+            } catch {
+                self.pueblos = []
+                print("Error al obtener los pueblos: \(error.localizedDescription)")
             }
+            
         }
     }
 }
