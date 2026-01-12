@@ -23,7 +23,7 @@ final class PuebloDetailViewModel: ObservableObject {
         self.repository = repository
     }
 
-    // MARK: - API
+    // MARK: - Fuctions
     /// Carga los lugares de un pueblo por su identificador.
     func fetchLugares(for puebloId: Int) async {
         lugaresState = .loading
@@ -45,6 +45,39 @@ final class PuebloDetailViewModel: ObservableObject {
         } catch {
             self.fotosPueblo = []
             fotosState = .failed(error.localizedDescription)
+        }
+    }
+
+    func load(for puebloId: Int) async {
+        // Cargamos lugares primero
+        await fetchLugares(for: puebloId)
+
+        // Si no hay lugares, no hay fotos que cargar
+        guard !lugares.isEmpty else { return }
+
+        // Cargamos fotos de todos los lugares en paralelo y consolidamos resultados
+        fotosState = .loading
+        do {
+            let allFotos: [[PuebloFoto]] = try await withThrowingTaskGroup(of: [PuebloFoto].self) { group in
+                for lugar in lugares {
+                    let lugarId = lugar.id
+                    group.addTask { [repository] in
+                        try await repository.listFotos(lugarId: lugarId)
+                    }
+                }
+
+                var collected: [[PuebloFoto]] = []
+                for try await fotos in group {
+                    collected.append(fotos)
+                }
+                return collected
+            }
+            // Aplanamos en un solo array
+            self.fotosPueblo = allFotos.flatMap { $0 }
+            self.fotosState = .loaded
+        } catch {
+            self.fotosPueblo = []
+            self.fotosState = .failed(error.localizedDescription)
         }
     }
 }
