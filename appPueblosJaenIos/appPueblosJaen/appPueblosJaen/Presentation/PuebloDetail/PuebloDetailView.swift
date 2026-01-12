@@ -174,7 +174,7 @@ struct PuebloDetailView: View {
                                 EmptyView()
                             }
                         }
-                        .frame(width: 280, height: 180)
+                        .frame(width: 320, height: 180)
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                 }
@@ -236,7 +236,7 @@ struct InfoCard: View {
             previewFotos: [
                 // Inserta aquí tus PuebloFoto con orden y url_foto
                 PuebloFoto(id: 8, lugar_id: 6, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/6/1765971791759_0.jpg", titulo: "Ermita de San Francisco", descripcion: "", es_portada: true, orden: 0, created_at: nil),
-                PuebloFoto(id: 10, lugar_id: 11, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/11/1766051675274_0.jpg", titulo: "Interior Iglesia", descripcion: "", es_portada: false, orden: 1, created_at: nil),
+                PuebloFoto(id: 10, lugar_id: 11, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/11/1766051675274_0.jpg", titulo: "Fuente", descripcion: "", es_portada: false, orden: 1, created_at: nil),
                 PuebloFoto(id: 11, lugar_id: 12, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/12/1766052085635_0.jpg", titulo: "Fuente", descripcion: "", es_portada: false, orden: 2, created_at: nil)
             ]
         )
