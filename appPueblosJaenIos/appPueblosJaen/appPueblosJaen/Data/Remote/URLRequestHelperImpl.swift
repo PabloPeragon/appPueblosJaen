@@ -49,7 +49,7 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
         components?.queryItems = [
             URLQueryItem(name: "pueblo_id", value: "eq.\(puebloId)"),
             URLQueryItem(name: "activo", value: "is.true"),
-            URLQueryItem(name: "orden", value: "orden.asc")
+            URLQueryItem(name: "order", value: "orden.asc")
         ]
         guard let url = components?.url else {
             print("Error al crear la url de lugares: \(String(describing: components))")
@@ -73,7 +73,7 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
         var components = URLComponents(string: "\(baseURL)\(endpoints.fotos)")
         components?.queryItems = [
             URLQueryItem(name: "lugar_id", value: "eq.\(lugarId)"),
-            URLQueryItem(name: "orden", value: "orden.asc")
+            URLQueryItem(name: "order", value: "orden.asc")
         ]
         guard let url = components?.url else {
             print("Error al crear la url de fotos: \(String(describing: components))")
