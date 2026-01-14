@@ -39,7 +39,8 @@ struct PuebloDetailCellView: View {
                         foto
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 320, height: 180)
+                            .frame(height: 250)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .accessibilityLabel(Text("Foto de Pueblo"))
                         
                     case .failure:
@@ -74,5 +75,5 @@ struct PuebloDetailCellView: View {
 }
 
 #Preview {
-    PuebloDetailCellView(foto: PuebloFoto(id: 8, lugar_id: 6, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/6/1765971791759_0.jpg", titulo: "Ermita de San Francisco", descripcion: "", es_portada: true, orden: 0, created_at: nil))
+    PuebloDetailCellView(foto: PuebloFoto(id: 8, lugar_id: 6, url_foto: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/fotos-lugares/lugares/17/1768416677749_0.jpeg", titulo: "Ermita de San Francisco", descripcion: "", es_portada: true, orden: 0, created_at: nil))
 }
