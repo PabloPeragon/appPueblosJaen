@@ -149,36 +149,17 @@ struct PuebloDetailView: View {
     private var photosSection: some View {
         let source = previewFotos ?? detailViewModel.fotosPueblo
         let photos = source.sorted { ($0.orden ?? Int.max) < ($1.orden ?? Int.max) }
+        
+        
         if !photos.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 10) {
                     ForEach(photos) { foto in
-                        AsyncImage(url: URL(string: foto.url_foto)) { phase in
-                            switch phase {
-                            case .empty:
-                                ZStack {
-                                    Color.secondary.opacity(0.08)
-                                    ProgressView()
-                                }
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                            case .failure:
-                                ZStack {
-                                    Color.secondary.opacity(0.08)
-                                    Image(systemName: "photo")
-                                        .foregroundStyle(.secondary)
-                                }
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
-                        .frame(width: 320, height: 180)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        PuebloDetailCellView(foto: foto)
                     }
                 }
                 .padding(.horizontal)
+                
             }
         }
     }

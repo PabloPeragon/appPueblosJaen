@@ -38,7 +38,7 @@ struct PuebloDetailCellView: View {
                     case .success(let foto):
                         foto
                             .resizable()
-                            .scaledToFit()
+                            .scaledToFill()
                             .frame(width: 320, height: 180)
                             .accessibilityLabel(Text("Foto de Pueblo"))
                         
