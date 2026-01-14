@@ -9,8 +9,10 @@ import SwiftUI
 
 struct PuebloCellView: View {
     
+    // MARK: Properties
     var pueblo: Pueblo
     
+    // MARK: Init
     init(pueblo: Pueblo) {
         self.pueblo = pueblo
     }
