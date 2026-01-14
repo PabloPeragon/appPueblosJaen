@@ -39,7 +39,7 @@ struct PuebloDetailCellView: View {
                         foto
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 250)
+                            .frame(height: 290)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .accessibilityLabel(Text("Foto de Pueblo"))
                         

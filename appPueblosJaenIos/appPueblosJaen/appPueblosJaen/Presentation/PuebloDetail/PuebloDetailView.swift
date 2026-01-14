@@ -160,7 +160,7 @@ struct PuebloDetailView: View {
                         PuebloDetailCellView(foto: foto)
                     }
                 }
-                .padding(.horizontal)
+                //.padding(.horizontal)
                 
             }
         }
