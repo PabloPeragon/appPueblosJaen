@@ -62,7 +62,9 @@ struct PuebloDetailView: View {
                 titleSection
                 statsSection
                 descriptionSection
-                if showPhotosInPreview { photosSection }
+                if showPhotosInPreview || !detailViewModel.fotosPueblo.isEmpty {
+                    photosSection
+                }
             }
             .padding(.horizontal)
         }
