@@ -9,10 +9,10 @@ Una app para descubrir los pueblos de la provincia de Jaén: su ubicación en el
 - Los datos se descargan de un servicio online (Supabase) de forma segura y eficiente.
 - La interfaz está hecha con SwiftUI y el mapa con MapKit.
 
-## Capturas (placeholders)
-- ![Pantalla de lista](Docs/Images/lista.png)
-- ![Detalle de pueblo](Docs/Images/detalle.png)
-- ![Galería de fotos](Docs/Images/fotos.png)
+## Capturas
+- ![lista](appPueblosJaenIos/appPueblosJaen/appPueblosJaen/Docs/Images/lista.png)
+- ![detalle](appPueblosJaenIos/appPueblosJaen/appPueblosJaen/Docs/Images/detalle.png)
+- ![fotos](appPueblosJaenIos/appPueblosJaen/appPueblosJaen/Docs/Images/fotos.png)
 
 ## Funcionalidades principales
 - Listado de pueblos con carga remota.
