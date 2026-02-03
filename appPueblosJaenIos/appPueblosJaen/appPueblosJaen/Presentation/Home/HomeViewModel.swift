@@ -5,13 +5,15 @@
 //  Created by Pablo Peragón Garrido on 27/11/25.
 //
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class HomeViewModel: ObservableObject {
+final class HomeViewModel {
     
     // MARK: Properties
     let repository: RepositoryProtocol
-    @Published var pueblos: [Pueblo] = []
+    var pueblos: [Pueblo] = []
     
     // MARK: Init
     init(repository: RepositoryProtocol) {

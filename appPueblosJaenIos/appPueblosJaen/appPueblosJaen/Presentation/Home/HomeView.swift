@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     //MARK: - Properties
-    @ObservedObject var homeViewModel: HomeViewModel
+    var homeViewModel: HomeViewModel
     @State private var searchText: String = ""
     @State private var path = NavigationPath()
     

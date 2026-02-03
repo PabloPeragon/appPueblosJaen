@@ -1,7 +1,9 @@
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class PuebloDetailViewModel: ObservableObject {
+final class PuebloDetailViewModel {
     // MARK: - Types
     enum LoadState {
         case idle
@@ -13,11 +15,11 @@ final class PuebloDetailViewModel: ObservableObject {
     // MARK: - Properties
     let repository: RepositoryProtocol
 
-    @Published private(set) var lugares: [LugarImportante] = []
-    @Published private(set) var fotosPueblo: [PuebloFoto] = []
+    private(set) var lugares: [LugarImportante] = []
+    private(set) var fotosPueblo: [PuebloFoto] = []
 
-    @Published var lugaresState: LoadState = .idle
-    @Published var fotosState: LoadState = .idle
+    var lugaresState: LoadState = .idle
+    var fotosState: LoadState = .idle
 
     init(repository: RepositoryProtocol) {
         self.repository = repository

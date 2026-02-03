@@ -11,10 +11,10 @@ import MapKit
 struct PuebloDetailView: View {
     
     //MARK: - Properties
-    @ObservedObject var homeViewModel: HomeViewModel
-    var pueblo: Pueblo
+    var homeViewModel: HomeViewModel
+    @State var pueblo: Pueblo
     @State private var cameraPosition: MapCameraPosition
-    @StateObject private var detailViewModel: PuebloDetailViewModel
+    @State private var detailViewModel: PuebloDetailViewModel
     private let showPhotosInPreview: Bool
     private let previewFotos: [PuebloFoto]?
     
@@ -49,7 +49,7 @@ struct PuebloDetailView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
         _cameraPosition = State(initialValue: .region(region))
-        _detailViewModel = StateObject(wrappedValue: PuebloDetailViewModel(repository: homeViewModel.repository))
+        _detailViewModel = State(wrappedValue: PuebloDetailViewModel(repository: homeViewModel.repository))
         self.showPhotosInPreview = showPhotosInPreview
         self.previewFotos = previewFotos
     }
