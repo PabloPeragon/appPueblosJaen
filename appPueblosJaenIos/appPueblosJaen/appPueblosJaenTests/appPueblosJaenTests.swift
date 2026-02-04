@@ -27,6 +27,28 @@ final class appPueblosJaenTests: XCTestCase {
         
     }
     
+    func testModelPueblo_desdeJSON() throws {
+        let json = """
+        {
+            "id": 23,
+            "nombre": "Ubeda",
+            "codigo_postal": "23400",
+            "habitantes": 34000
+        }
+        """.data(using: .utf8)!
+
+        
+        let decoder = JSONDecoder()
+        let pueblo = try decoder.decode(Pueblo.self, from: json)
+
+        
+        XCTAssertEqual(pueblo.id, 23)
+        XCTAssertEqual(pueblo.nombre, "Ubeda")
+        XCTAssertEqual(pueblo.codigo_postal, "23400")
+        XCTAssertEqual(pueblo.habitantes, 34000)
+        
+    }
+    
     func testModelPuebloFoto() {
         let id = 2
         let lugarId = 3
