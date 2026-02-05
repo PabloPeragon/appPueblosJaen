@@ -28,25 +28,35 @@ final class PuebloDetailViewModel {
     // MARK: - Fuctions
     /// Carga los lugares de un pueblo por su identificador.
     func fetchLugares(for puebloId: Int) async {
-        lugaresState = .loading
+        await MainActor.run { lugaresState = .loading }
         do {
-            self.lugares = try await repository.listLugares(puebloId: puebloId)
-            lugaresState = .loaded
+            let fetched = try await repository.listLugares(puebloId: puebloId)
+            await MainActor.run {
+                self.lugares = fetched
+                self.lugaresState = .loaded
+            }
         } catch {
-            self.lugares = []
-            lugaresState = .failed(error.localizedDescription)
+            await MainActor.run {
+                self.lugares = []
+                self.lugaresState = .failed(error.localizedDescription)
+            }
         }
     }
 
     /// Carga las fotos de un lugar por su identificador.
     func fetchFotos(for lugarId: Int) async {
-        fotosState = .loading
+        await MainActor.run { fotosState = .loading }
         do {
-            self.fotosPueblo = try await repository.listFotos(lugarId: lugarId)
-            fotosState = .loaded
+            let fetched = try await repository.listFotos(lugarId: lugarId)
+            await MainActor.run {
+                self.fotosPueblo = fetched
+                self.fotosState = .loaded
+            }
         } catch {
-            self.fotosPueblo = []
-            fotosState = .failed(error.localizedDescription)
+            await MainActor.run {
+                self.fotosPueblo = []
+                self.fotosState = .failed(error.localizedDescription)
+            }
         }
     }
 
@@ -58,7 +68,7 @@ final class PuebloDetailViewModel {
         guard !lugares.isEmpty else { return }
 
         // Cargamos fotos de todos los lugares en paralelo y consolidamos resultados
-        fotosState = .loading
+        await MainActor.run { self.fotosState = .loading }
         do {
             let allFotos: [[PuebloFoto]] = try await withThrowingTaskGroup(of: [PuebloFoto].self) { group in
                 for lugar in lugares {
@@ -74,12 +84,17 @@ final class PuebloDetailViewModel {
                 }
                 return collected
             }
-            // Aplanamos en un solo array
-            self.fotosPueblo = allFotos.flatMap { $0 }
-            self.fotosState = .loaded
+            let flattened = allFotos.flatMap { $0 }
+            await MainActor.run {
+                self.fotosPueblo = flattened
+                self.fotosState = .loaded
+            }
         } catch {
-            self.fotosPueblo = []
-            self.fotosState = .failed(error.localizedDescription)
+            await MainActor.run {
+                self.fotosPueblo = []
+                self.fotosState = .failed(error.localizedDescription)
+            }
         }
     }
 }
+
