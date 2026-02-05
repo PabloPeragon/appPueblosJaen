@@ -25,9 +25,14 @@ final class HomeViewModel {
     func fetchPueblos() {
         Task {
             do {
-                self.pueblos = try await repository.listPueblos()
+                let pueblos = try await repository.listPueblos()
+                await MainActor.run {
+                    self.pueblos = pueblos
+                }
             } catch {
-                self.pueblos = []
+                await MainActor.run {
+                    self.pueblos = []
+                }
                 print("Error al obtener los pueblos: \(error.localizedDescription)")
             }
             
