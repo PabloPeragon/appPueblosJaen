@@ -18,6 +18,14 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
     }()
     var endpoints: Endpoints = Endpoints()
     
+    // Token inyectable para tests; si es nil, se lee del Info.plist
+    var token: String?
+
+    private func resolvedToken() -> String? {
+        if let token = token, !token.isEmpty { return token }
+        return Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String
+    }
+    
     
     // MARK: Functions
     func listPueblos() -> URLRequest? {
@@ -28,9 +36,9 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
             return nil
         }
         
-        // Get token
-        guard let token = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String, !token.isEmpty else {
-            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY del Info.plist")
+        // Get token (inyectable para tests)
+        guard let token = resolvedToken(), !token.isEmpty else {
+            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY (inyectado o desde Info.plist)")
             return nil
         }
         
@@ -56,8 +64,8 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
             return nil
         }
         
-        guard let token = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String, !token.isEmpty else {
-            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY del Info.plist")
+        guard let token = resolvedToken(), !token.isEmpty else {
+            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY (inyectado o desde Info.plist)")
             return nil
         }
         
@@ -80,8 +88,8 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
             return nil
         }
         
-        guard let token = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String, !token.isEmpty else {
-            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY del Info.plist")
+        guard let token = resolvedToken(), !token.isEmpty else {
+            assertionFailure("No se ha podido obtener SUPABASE_ANON_KEY (inyectado o desde Info.plist)")
             return nil
         }
         
@@ -93,3 +101,4 @@ final class URLRequestHelperImpl: URLRequestHelperProtocol {
         return urlRequest
     }
 }
+
