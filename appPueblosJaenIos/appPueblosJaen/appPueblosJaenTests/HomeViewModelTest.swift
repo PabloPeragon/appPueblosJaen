@@ -30,8 +30,21 @@ final class HomeViewModelTest: XCTestCase {
         // Pequeño delay para permitir a la Task del ViewModel completar en el main actor
         try? await Task.sleep(nanoseconds: 100_000_000) // 100 ms
         
+        //Nos aseguramos que tras crear el HomeViewModel y completar la carga contine
+        //los mismos datos que en el samplePueblos.
         XCTAssertEqual(sut.pueblos, samplePueblos)
+        
+        //Comprovamos que el ViewModel ha llamado una vez al repositorio
         XCTAssertEqual(repo.listPueblosCallCount, 1)
+        
+        //La lista de pueblos no deberia estar vacia
+        XCTAssertFalse(sut.pueblos.isEmpty)
+        
+        //El numero de pueblos deberia coincidir
+        XCTAssertEqual(sut.pueblos.count, samplePueblos.count)
+        
+        //Deberia aparecer el pueblo "Jamilena"
+        XCTAssertTrue(sut.pueblos.contains(where: {$0.nombre == "Jamilena"}))
         
     }
     
@@ -45,9 +58,19 @@ final class HomeViewModelTest: XCTestCase {
 
         // Then
         try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
-
+        
+        //Nos aseguramos que al fallar la llamada nuestra lista esta vacia.
         XCTAssertTrue(sut.pueblos.isEmpty)
+        
+        //Comprobamos que solo se llama una vez al repositorio
         XCTAssertEqual(repo.listPueblosCallCount, 1)
+        
+        //El recuento debe de ser 0 cuando hay un error
+        XCTAssertEqual(sut.pueblos.count, 0)
+        
+        //No debe haber primer elemento cuando la lista esta vacia
+        XCTAssertNil(sut.pueblos.first)
     }
+    
     
 }
