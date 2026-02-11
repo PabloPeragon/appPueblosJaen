@@ -88,3 +88,4 @@ Secrets.xcconfig
 
 # SPM workspace data (Xcode)
 .projectWorkspace/
+*.xcuserstate
