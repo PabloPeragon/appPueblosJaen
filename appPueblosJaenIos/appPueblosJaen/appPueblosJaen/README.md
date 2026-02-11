@@ -27,6 +27,8 @@ Una app para descubrir los pueblos de la provincia de Jaén: su ubicación en el
 ## Por qué es un proyecto profesional
 - Arquitectura clara (MVVM + Repository + DataSource) que separa interfaz, lógica y datos.
 - Código moderno en Swift con concurrencia (async/await) y tipado seguro (Codable).
+- Test para asegurar el buen funcionamiento de la app.
+- Navegación por la app con caja de estados.
 - Red modular y reutilizable (peticiones, errores, endpoints separados).
 - Diseño cuidado con SwiftUI, colores del sistema y componentes reutilizables.
 - Pensado para crecer: añadir nuevas pantallas o fuentes de datos es sencillo.
