@@ -16,6 +16,7 @@ enum Status {
 
 
 
+@MainActor
 final class RootViewModel: ObservableObject {
     
     // MARK: Properties
@@ -30,5 +31,24 @@ final class RootViewModel: ObservableObject {
     
     
     // MARK: Functions
+    func loadInitialData() async {
+        // Evitamos recargas innecesarias si ya tenemos datos
+        if case .loaded = status { return }
+        
+        status = .loading
+        
+        do {
+            let pueblos = try await repository.listPueblos()
+            if pueblos.isEmpty {
+                status = .empty
+            } else {
+                status = .loaded(pueblos: pueblos)
+            }
+        } catch let error as DataError {
+            status = .error(error)
+        } catch {
+            status = .error(.serverError)
+        }
+    }
     
 }

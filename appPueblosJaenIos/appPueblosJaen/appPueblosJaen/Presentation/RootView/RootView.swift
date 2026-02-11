@@ -13,26 +13,35 @@ struct RootView: View {
     @EnvironmentObject var rootViewModel: RootViewModel
     
     var body: some View {
-        switch rootViewModel.status {
-            
-        case .loading:
-            ProgressView("Cargando pueblos...")
-            
-        case .loaded(let pueblos):
-            List(pueblos) { pueblo in
-                Text(pueblo.nombre)
+        
+        Group {
+            switch rootViewModel.status {
+                
+            case .loading:
+                VStack {
+                    ProgressView()
+                    Text("Cargando Pueblos de Jaén...")
+                }
+                
+            case .loaded(let pueblos):
+                // Inyectamos los datos cargador en el HomeViewModel
+                HomeView(homeViewModel: HomeViewModel(repository: rootViewModel.repository, pueblos: pueblos))
+                
+            case .empty:
+                ContentUnavailableView("No hay datos", systemImage: "map", description: Text("No se encontraron pueblos en la base de datos."))
+                
+            case .error(let error):
+                VStack(spacing: 16) {
+                    Text("Error").font(.headline)
+                    Text(error.errorDescription ?? "Error desconocido")
+                    Button("Reintentar"){
+                        Task { await rootViewModel.loadInitialData() }
+                    }
+                }
             }
-            
-        case .empty:
-            Text("No hay pueblos disponibles.")
-            
-        case .error(let error):
-            VStack {
-                Text("Algo salió mal")
-                Text(error.errorDescription ?? "Error desconocido")
-                    .font(.caption)
-                    .foregroundColor(.red)
-            }
+        }
+        .task {
+            await rootViewModel.loadInitialData()
         }
     }
 }

@@ -13,12 +13,12 @@ final class HomeViewModel {
     
     // MARK: Properties
     let repository: RepositoryProtocol
-    var pueblos: [Pueblo] = []
+    var pueblos: [Pueblo]
     
     // MARK: Init
-    init(repository: RepositoryProtocol) {
+    init(repository: RepositoryProtocol, pueblos: [Pueblo] = []) {
         self.repository = repository
-        fetchPueblos()
+        self.pueblos = pueblos
     }
     
     // MARK: Functions
