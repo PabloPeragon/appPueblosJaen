@@ -20,7 +20,10 @@ struct RootView: View {
             case .loading:
                 VStack {
                     ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(.purple)
                     Text("Cargando Pueblos de Jaén...")
+                        .foregroundColor(.purple)
                 }
                 
             case .loaded(let pueblos):
@@ -33,10 +36,16 @@ struct RootView: View {
             case .error(let error):
                 VStack(spacing: 16) {
                     Text("Error").font(.headline)
+                        .foregroundStyle(.purple)
                     Text(error.errorDescription ?? "Error desconocido")
+                        .foregroundStyle(.purple)
                     Button("Reintentar"){
                         Task { await rootViewModel.loadInitialData() }
                     }
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
                 }
             }
         }
