@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     //MARK: - Properties
-    var homeViewModel: HomeViewModel
+    @Bindable var homeViewModel: HomeViewModel
     @State private var searchText: String = ""
     @State private var path = NavigationPath()
     
@@ -31,11 +31,19 @@ struct HomeView: View {
     }
     
     var body: some View {
-        NavigationStack(path: $path){
+        NavigationStack(path: $path) {
             List(filteredPueblos) { pueblo in
-                NavigationLink(value: pueblo){
+                NavigationLink(value: pueblo) {
                     PuebloCellView(pueblo: pueblo)
                 }
+            }
+            .refreshable {
+                await homeViewModel.refreshPueblos()
+            }
+            .alert("No se pudo actualizar", isPresented: $homeViewModel.showRefreshError) {
+                Button("Entendido", role: .cancel) {}
+            } message: {
+                Text(homeViewModel.lastErrorMessage)
             }
             .navigationDestination(for: Pueblo.self) { pueblo in
                 PuebloDetailView(homeViewModel: homeViewModel, pueblo: pueblo)

@@ -45,7 +45,7 @@ struct RootView: View {
                     .padding()
                     .background(Color.purple)
                     .foregroundColor(.white)
-                    .cornerRadius(10)
+                    .cornerRadius(20)
                 }
             }
         }

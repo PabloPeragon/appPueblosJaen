@@ -13,6 +13,7 @@ enum DataError: LocalizedError {
     case badRequest
     case unauthorized
     case serverError
+    case noInternet
     case unexpectedStatus(Int)
     case decoding(Error)
 
@@ -28,6 +29,8 @@ enum DataError: LocalizedError {
             return "No autorizado."
         case .serverError:
             return "Error del servidor."
+        case .noInternet:
+            return "Sin conexión a Internet. Comprueba tu cobertura."
         case .unexpectedStatus(let code):
             return "Código de estado inesperado: \(code)."
         case .decoding(let underlying):
