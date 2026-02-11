@@ -10,8 +10,26 @@ import SwiftUI
 @main
 struct appPueblosJaen: App {
     var body: some Scene {
+        WindowGroup{
+            let remoteDataSource = RemoteDataSourceImpl()
+            let repository = RepositoryImpl(remoteDataSource: remoteDataSource)
+            RootView()
+                .environmentObject(RootViewModel(repository: repository))
+        }
+    }
+}
+
+
+
+
+
+/*
+@main
+struct appPueblosJaen: App {
+    var body: some Scene {
         WindowGroup {
             HomeView(homeViewModel: HomeViewModel(repository: RepositoryImpl(remoteDataSource: RemoteDataSourceImpl())))
         }
     }
 }
+*/
