@@ -14,7 +14,8 @@ struct appPueblosJaen: App {
             let remoteDataSource = RemoteDataSourceImpl()
             let repository = RepositoryImpl(remoteDataSource: remoteDataSource)
             RootView()
-                .environmentObject(RootViewModel(repository: repository))
+                //.environment(rootViewModel)
+                .environment(RootViewModel(repository: repository))
         }
     }
 }

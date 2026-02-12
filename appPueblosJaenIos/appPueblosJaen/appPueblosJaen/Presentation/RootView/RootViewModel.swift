@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Observation
 
 enum Status {
     case loading
@@ -15,13 +16,13 @@ enum Status {
 }
 
 
-
+@Observable
 @MainActor
-final class RootViewModel: ObservableObject {
+final class RootViewModel {
     
     // MARK: Properties
     let repository: RepositoryProtocol
-    @Published var status: Status = .loading
+    var status: Status = .loading
     
     
     // MARK: Init

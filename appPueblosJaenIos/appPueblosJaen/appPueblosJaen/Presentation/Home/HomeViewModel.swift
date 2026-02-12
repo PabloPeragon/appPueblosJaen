@@ -42,22 +42,4 @@ final class HomeViewModel {
             self.showRefreshError = true
         }
     }
-    /*
-    func fetchPueblos() {
-        Task {
-            do {
-                let pueblos = try await repository.listPueblos()
-                await MainActor.run {
-                    self.pueblos = pueblos
-                }
-            } catch {
-                await MainActor.run {
-                    self.pueblos = []
-                }
-                print("Error al obtener los pueblos: \(error.localizedDescription)")
-            }
-            
-        }
-    }
-    */
 }

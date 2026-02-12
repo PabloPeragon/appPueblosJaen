@@ -10,7 +10,7 @@ import SwiftUI
 struct RootView: View {
     
     // MARK: - Properties
-    @EnvironmentObject var rootViewModel: RootViewModel
+    @Environment(RootViewModel.self) var rootViewModel
     
     var body: some View {
         
