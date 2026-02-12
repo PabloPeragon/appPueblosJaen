@@ -14,6 +14,7 @@ final class PuebloDetailViewModel {
 
     // MARK: - Properties
     let repository: RepositoryProtocol
+    var puebloActualizado: Pueblo?
 
     private(set) var lugares: [LugarImportante] = []
     private(set) var fotosPueblo: [PuebloFoto] = []
@@ -61,11 +62,29 @@ final class PuebloDetailViewModel {
     }
 
     func load(for puebloId: Int) async {
-        // Cargamos lugares primero
+        // Volvemos a pedir los datos del pueblo para ver si han cambiado
+        do {
+            let todos = try await repository.listPueblos()
+            if let actualizado = todos.first(where: { $0.id == puebloId }) {
+                await MainActor.run {
+                    self.puebloActualizado = actualizado
+                }
+            }
+        } catch {
+            print("Error al actualizar datos básicos: \(error)")
+        }
+        
+        
+        // Cargamos lugares actualizados
         await fetchLugares(for: puebloId)
 
         // Si no hay lugares, no hay fotos que cargar
-        guard !lugares.isEmpty else { return }
+        guard !lugares.isEmpty else {
+            await MainActor.run {
+                self.fotosState = .failed("No se encontraron lugares para cargar fotos.")
+            }
+            return
+        }
 
         // Cargamos fotos de todos los lugares en paralelo y consolidamos resultados
         await MainActor.run { self.fotosState = .loading }
@@ -91,8 +110,8 @@ final class PuebloDetailViewModel {
             }
         } catch {
             await MainActor.run {
-                self.fotosPueblo = []
                 self.fotosState = .failed(error.localizedDescription)
+                print("Error al refrescar fotos: \(error.localizedDescription)")
             }
         }
     }

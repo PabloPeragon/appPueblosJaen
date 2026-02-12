@@ -68,6 +68,14 @@ struct PuebloDetailView: View {
             }
             .padding(.horizontal)
         }
+        .refreshable {
+            await detailViewModel.load(for: pueblo.id)
+        }
+        .onChange(of: detailViewModel.puebloActualizado) { _, nuevoPueblo in
+            if let nuevoPueblo = nuevoPueblo {
+                self.pueblo = nuevoPueblo
+            }
+        }
         .navigationTitle(pueblo.nombre)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.purple, for: .navigationBar)
