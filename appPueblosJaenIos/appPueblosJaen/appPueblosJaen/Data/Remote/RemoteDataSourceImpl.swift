@@ -107,4 +107,31 @@ final class RemoteDataSourceImpl: RemoteDataSourceProtocol {
             
         }
     }
+    
+    func listNegocios(puebloId: Int) async throws -> [Negocio] {
+        guard let request = urlRequestHelper.listNegocios(puebloId: puebloId) else {
+            throw DataError.invalidRequest
+        }
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let http = response as? HTTPURLResponse else {
+            throw DataError.invalidResponse
+        }
+        switch http.statusCode {
+        case 200:
+            do {
+                return try JSONDecoder().decode([Negocio].self, from: data)
+            } catch {
+                throw DataError.decoding(error)
+            }
+        case 400:
+            throw DataError.badRequest
+        case 401:
+            throw DataError.unauthorized
+        case 500:
+            throw DataError.serverError
+        default:
+            throw DataError.unexpectedStatus(http.statusCode)
+        }
+    }
 }

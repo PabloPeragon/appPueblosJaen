@@ -31,4 +31,8 @@ final class RepositoryImpl: RepositoryProtocol {
         return try await remoteDataSource.listFotos(lugarId: lugarId)
     }
     
+    func listNegocios(puebloId: Int) async throws -> [Negocio] {
+        return try await remoteDataSource.listNegocios(puebloId: puebloId)
+    }
+    
 }

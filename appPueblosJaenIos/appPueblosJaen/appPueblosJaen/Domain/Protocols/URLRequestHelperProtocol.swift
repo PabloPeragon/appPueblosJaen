@@ -16,4 +16,5 @@ protocol URLRequestHelperProtocol {
     func listPueblos() -> URLRequest?
     func listLugares(puebloId: Int) -> URLRequest?
     func listFotos(lugarId: Int) -> URLRequest?
+    func listNegocios(puebloId: Int) -> URLRequest?
 }

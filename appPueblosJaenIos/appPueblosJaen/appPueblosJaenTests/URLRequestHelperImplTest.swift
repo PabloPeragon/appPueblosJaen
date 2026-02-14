@@ -91,6 +91,36 @@ final class URLRequestHelperImplTests: XCTestCase {
     }
 
     @MainActor
+    func test_listNegocios_buildsURLHeadersAndQueryItems() throws {
+        let helper = URLRequestHelperImpl()
+        helper.baseURL = "https://api.example.com"
+        helper.token = "TEST_TOKEN"
+
+        let puebloId = 77
+        let request = helper.listNegocios(puebloId: puebloId)
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request?.httpMethod, "GET")
+
+        guard let url = request?.url, let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return XCTFail("URL inválida")
+        }
+        XCTAssertEqual(components.scheme, "https")
+        XCTAssertEqual(components.host, "api.example.com")
+        XCTAssertEqual(components.path, "/rest/v1/negocios")
+
+        let items = components.queryItems ?? []
+        func value(for name: String) -> String? { items.first(where: { $0.name == name })?.value }
+
+        XCTAssertEqual(value(for: "pueblo_id"), "eq.\(puebloId)")
+        XCTAssertEqual(value(for: "activo"), "is.true")
+        XCTAssertEqual(value(for: "order"), "orden_destacado.asc, nombre.asc")
+
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "Accept"), "application/json")
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "Authorization"), "Bearer TEST_TOKEN")
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "apikey"), "TEST_TOKEN")
+    }
+
+    @MainActor
     func test_listPueblos_withInvalidBaseURL_returnsNil() {
         let helper = URLRequestHelperImpl()
         helper.baseURL = "ht!tp://invalid-url" // Intencionadamente inválida
