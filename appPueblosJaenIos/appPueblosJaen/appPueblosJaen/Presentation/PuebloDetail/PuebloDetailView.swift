@@ -57,10 +57,16 @@ struct PuebloDetailView: View {
     //MARK: - Body
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .center, spacing: 18) {
                 mapSection
                 titleSection
                 statsSection
+                
+                //Carrusel de PDFs
+                if !detailViewModel.negociosConPDF.isEmpty {
+                    infoAyuntamientoSection
+                }
+                
                 descriptionSection
                 if showPhotosInPreview || !detailViewModel.fotosPueblo.isEmpty {
                     photosSection
@@ -170,6 +176,23 @@ struct PuebloDetailView: View {
                 }
                 //.padding(.horizontal)
                 
+            }
+        }
+    }
+    
+    // Componente del carrusel horizontal
+    private var infoAyuntamientoSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Información y Bandos", systemImage: "megaphone.fill")
+                .font(.headline)
+                .foregroundColor(.purple)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 12) {
+                    ForEach(detailViewModel.negociosConPDF) { negocio in
+                        CardInfoPuebloView(negocio: negocio)
+                    }
+                }
             }
         }
     }

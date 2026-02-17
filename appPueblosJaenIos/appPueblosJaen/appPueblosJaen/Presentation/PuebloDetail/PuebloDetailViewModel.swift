@@ -11,21 +11,26 @@ final class PuebloDetailViewModel {
         case loaded
         case failed(String)
     }
-
+    
     // MARK: - Properties
     let repository: RepositoryProtocol
     var puebloActualizado: Pueblo?
-
+    
     private(set) var lugares: [LugarImportante] = []
     private(set) var fotosPueblo: [PuebloFoto] = []
-
+    private(set) var negocios: [Negocio] = []
+    
+    var negociosConPDF: [Negocio] {
+        negocios.filter { $0.notificacion_pdf_url != nil && !($0.notificacion_pdf_url?.isEmpty ?? true) }
+    }
+    
     var lugaresState: LoadState = .idle
     var fotosState: LoadState = .idle
-
+    
     init(repository: RepositoryProtocol) {
         self.repository = repository
     }
-
+    
     // MARK: - Fuctions
     /// Carga los lugares de un pueblo por su identificador.
     func fetchLugares(for puebloId: Int) async {
@@ -43,7 +48,7 @@ final class PuebloDetailViewModel {
             }
         }
     }
-
+    
     /// Carga las fotos de un lugar por su identificador.
     func fetchFotos(for lugarId: Int) async {
         await MainActor.run { fotosState = .loading }
@@ -60,7 +65,7 @@ final class PuebloDetailViewModel {
             }
         }
     }
-
+    
     func load(for puebloId: Int) async {
         // Volvemos a pedir los datos del pueblo para ver si han cambiado
         do {
@@ -77,7 +82,7 @@ final class PuebloDetailViewModel {
         
         // Cargamos lugares actualizados
         await fetchLugares(for: puebloId)
-
+        
         // Si no hay lugares, no hay fotos que cargar
         guard !lugares.isEmpty else {
             await MainActor.run {
@@ -85,8 +90,20 @@ final class PuebloDetailViewModel {
             }
             return
         }
-
-        // Cargamos fotos de todos los lugares en paralelo y consolidamos resultados
+        
+        // Cargamos los negocios del pueblo
+        do {
+            self.negocios = try await repository.listNegocios(puebloId: puebloId)
+        } catch {
+            print("Error al cargar negocios: \(error)")
+        }
+        
+        // Cargamos fotos
+        await fetchFotosConsolidadas()
+    }
+    
+    // Función auxiliar para limpiar el código de load
+    private func fetchFotosConsolidadas() async {
         await MainActor.run { self.fotosState = .loading }
         do {
             let allFotos: [[PuebloFoto]] = try await withThrowingTaskGroup(of: [PuebloFoto].self) { group in
@@ -96,7 +113,7 @@ final class PuebloDetailViewModel {
                         try await repository.listFotos(lugarId: lugarId)
                     }
                 }
-
+                
                 var collected: [[PuebloFoto]] = []
                 for try await fotos in group {
                     collected.append(fotos)
@@ -112,6 +129,7 @@ final class PuebloDetailViewModel {
             await MainActor.run {
                 self.fotosState = .failed(error.localizedDescription)
                 print("Error al refrescar fotos: \(error.localizedDescription)")
+                
             }
         }
     }
