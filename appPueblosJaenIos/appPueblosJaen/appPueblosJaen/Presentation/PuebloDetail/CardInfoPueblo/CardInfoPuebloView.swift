@@ -42,12 +42,13 @@ struct CardInfoPuebloView: View {
                 
                 // Parte inferior: Título y detalles
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(negocio.nombre)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .lineLimit(1)
-                        .foregroundStyle(.primary)
-                    
+                    if let texto = negocio.descripcion_corta?.trimmingCharacters(in: .whitespacesAndNewlines), !texto.isEmpty {
+                        Text(texto)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
+                            .foregroundStyle(.primary)
+                    }
                 }
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
