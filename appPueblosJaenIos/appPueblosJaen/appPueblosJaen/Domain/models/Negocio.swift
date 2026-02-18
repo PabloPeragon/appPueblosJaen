@@ -38,6 +38,6 @@ struct Negocio: Identifiable, Decodable, Hashable {
     let created_at: String?
     let updated_at: String?
     let notificacion_pdf_url: String?
-    let imagen_principal_url: String?
+    let imagen_principal_url: String
     
 }
