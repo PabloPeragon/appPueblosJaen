@@ -120,10 +120,17 @@ final class RemoteDataSourceImpl: RemoteDataSourceProtocol {
         switch http.statusCode {
         case 200:
             do {
-                return try JSONDecoder().decode([Negocio].self, from: data)
+                let decoded = try JSONDecoder().decode([Negocio].self, from: data)
+                print("Decodificados \(decoded.count) negocios")
+                return decoded
+            } catch let decodingError as DecodingError {
+                //printamos el campo que falta o esta mal en la base de datos
+                print("Error de decodificación en Negocios: \(decodingError)")
+                throw DataError.decoding(decodingError)
             } catch {
                 throw DataError.decoding(error)
             }
+            
         case 400:
             throw DataError.badRequest
         case 401:

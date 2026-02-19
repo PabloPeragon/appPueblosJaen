@@ -72,6 +72,19 @@ final class PuebloDetailViewModel {
     }
     
     func load(for puebloId: Int) async {
+        // Cargamos los negocios de forma aislada
+        do {
+            let fetchedNegocios = try await repository.listNegocios(puebloId: puebloId)
+            await MainActor.run {
+                self.negocios = fetchedNegocios
+                print("Pueblo \(puebloId): \(fetchedNegocios.count) negocios listos.")
+            }
+            
+        } catch {
+            print("Error en negocios para pueblo \(puebloId): \(error)")
+        }
+        
+        
         // Volvemos a pedir los datos del pueblo para ver si han cambiado
         do {
             let todos = try await repository.listPueblos()
@@ -96,15 +109,6 @@ final class PuebloDetailViewModel {
             return
         }
         
-        // Cargamos los negocios del pueblo
-        do {
-            let fetchedNegocios = try await repository.listNegocios(puebloId: puebloId)
-            await MainActor.run {
-                self.negocios = fetchedNegocios
-            }
-        } catch {
-            print("Error al cargar negocios: \(error)")
-        }
         
         // Cargamos fotos
         await fetchFotosConsolidadas()
