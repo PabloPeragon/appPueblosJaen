@@ -63,14 +63,18 @@ struct PuebloDetailView: View {
                 statsSection
                 
                 //Carrusel de PDFs
+                
                 if !detailViewModel.negociosConPDF.isEmpty {
                     infoAyuntamientoSection
                 }
                 
                 descriptionSection
+                
                 if showPhotosInPreview || !detailViewModel.fotosPueblo.isEmpty {
                     photosSection
                 }
+                
+                negociosSection
             }
             .padding(.horizontal)
         }
@@ -177,6 +181,32 @@ struct PuebloDetailView: View {
                 //.padding(.horizontal)
                 
             }
+        }
+    }
+    
+    @ViewBuilder
+    private var negociosSection: some View {
+        
+        if !detailViewModel.negociosValidos.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Comercios y Servicios", systemImage: "bag.fill")
+                    .font(.headline)
+                    .foregroundStyle(.purple)
+                
+                ScrollView(.horizontal ,showsIndicators: false) {
+                    LazyHStack(spacing: 12) {
+                        ForEach(detailViewModel.negociosValidos) { negocio in
+                            CardNegocioView(negocio: negocio)
+                                .frame(width: 300) // Ajusta el ancho para que se vea el siguiente
+                            
+                        }
+                    }
+                    .padding(.bottom, 5)
+                    
+                }
+            }
+            .padding(.top, 10)
+            
         }
     }
     

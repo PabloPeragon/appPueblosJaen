@@ -38,7 +38,7 @@ struct CardNegocioView: View {
                     case .success(let image):
                         image
                             .resizable()
-                            .scaledToFill()
+                            .scaledToFit()
                             .frame(height: 290)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .accessibilityLabel(Text("Imagen del negocio"))
@@ -71,23 +71,25 @@ struct CardNegocioView: View {
                 .accessibilityLabel("Imagen no disponible")
                 
             }
-        }
-        .padding()
-        //Configuración del texto
+            //Configuración del texto
             Text(negocio.nombre)
-                .font(.title)
+                .font(.title3)
                 .fontWeight(.bold)
                 .foregroundStyle(.purple)
-            
+                .lineLimit(1)
+                
             if let descripcion = negocio.descripcion_corta?.trimmingCharacters(in: .whitespacesAndNewlines), !descripcion.isEmpty {
                 Text(descripcion)
-                    .font(.title3)
-                    .fontWeight(.light)
-                    .foregroundStyle(.purple)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
             }
+        }
+        .frame(width: 300)
+        .padding()
     }
 }
 
 #Preview {
-    CardNegocioView(negocio: Negocio(id: 01, pueblo_id: 49, categoria_id: 2, nombre: "Local iOS Solutions", descripcion: "Creación de apps iOS", descripcion_corta: "Apps iOS", direccion: "Glorieta de San Isidro nº1", telefono: "953 000 000", movil: "662 47 34 91", email: "pabloperagon@gmail.com", web: "www.ios.com", instagram: "", facebook: "", twitter: "", latitud: nil, longitud: nil, horario: nil, es_premium: nil, fecha_inicio_premium: nil, fecha_fin_premium: nil, orden_destacado: 2, visualizaciones: nil, activo: nil, verificado: nil, fecha_verificacion: nil, propietario_email: nil, propietario_nombre: "", created_at: "", updated_at: "", notificacion_pdf_url: "", imagen_principal_url: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/imagenes-negocios/negocios/2/logo_1771438793660.jpg"))
+    CardNegocioView(negocio: Negocio(id: 01, pueblo_id: 49, categoria_id: 2, nombre: "Local iOS Solutions", descripcion: "Creación de apps iOS", descripcion_corta: "Apps iOS", direccion: "Glorieta de San Isidro nº1", telefono: "953 000 000", movil: "662 47 34 91", email: "pabloperagon@gmail.com", web: "www.ios.com", instagram: "", facebook: "", twitter: "", latitud: nil, longitud: nil, horario: nil, es_premium: nil, fecha_inicio_premium: nil, fecha_fin_premium: nil, orden_destacado: 2, visualizaciones: nil, activo: nil, verificado: nil, fecha_verificacion: nil, propietario_email: nil, propietario_nombre: "", created_at: "", updated_at: "", notificacion_pdf_url: "", imagen_principal_url: "https://kmxacmsqybtwbebqhwnu.supabase.co/storage/v1/object/public/imagenes-negocios/negocios/5/logo_1771498727751.png"))
 }

@@ -24,6 +24,11 @@ final class PuebloDetailViewModel {
         negocios.filter { $0.notificacion_pdf_url != nil && !($0.notificacion_pdf_url?.isEmpty ?? true) }
     }
     
+    var negociosValidos: [Negocio] {
+        // Filtramos negocios que tengan al menos nombre
+        negocios.filter { !($0.nombre.isEmpty) }
+    }
+    
     var lugaresState: LoadState = .idle
     var fotosState: LoadState = .idle
     
@@ -93,7 +98,10 @@ final class PuebloDetailViewModel {
         
         // Cargamos los negocios del pueblo
         do {
-            self.negocios = try await repository.listNegocios(puebloId: puebloId)
+            let fetchedNegocios = try await repository.listNegocios(puebloId: puebloId)
+            await MainActor.run {
+                self.negocios = fetchedNegocios
+            }
         } catch {
             print("Error al cargar negocios: \(error)")
         }
